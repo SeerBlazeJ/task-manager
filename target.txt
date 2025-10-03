@@ -1,0 +1,12 @@
+Building a task manager/sorter app using dioxus-fullstack, rusqlite and burn that takes the following inputs:
+- task's name
+- description
+- due date
+- importance
+- time required
+
+and sorts it properly (
+- it can break task into smaller portions if required
+- should respect user's current schedule
+- users can manually change the task's date/time of doing
+) and shows it into a calendar UI, that can expand day-wise(popups).

@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 mod frontend;
 mod server_db;
-use frontend::App;
+use frontend::route_handler;
 fn main() {
-    launch(App);
+    launch(route_handler);
 }

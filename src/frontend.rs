@@ -2,48 +2,31 @@ use crate::server_db::{add_todo, delete_task, get_todos, mark_done, mark_undone}
 use dioxus::prelude::*;
 const MAIN_CSS: Asset = asset!("assets/main.css");
 
+#[derive(Routable, Clone)]
+enum Route {
+    #[route("/")]
+    App {},
+    #[route("/add")]
+    AddTask {},
+    #[route("/:..route")]
+    PageNotFound { route: Vec<String> },
+}
+
+#[component]
+pub fn route_handler() -> Element {
+    rsx! {
+        Router::<Route> {}
+    }
+}
+
 #[component]
 pub fn App() -> Element {
-    let mut new_todo_item = use_signal(|| String::new());
-    let mut new_todo_due = use_signal(|| String::new());
+    // TODO: Handle all the fields of the updated task struct
     let mut todos = use_resource(get_todos);
     rsx! {
         document::Link { rel: "stylesheet", href: MAIN_CSS }
-        h1 { "Todo App made using Dioxus" }
-        div { id: "AddTaskHeader",
-            h2 { "Add Task" }
-        }
-        div { id: "inputArea",
-            input {
-                r#type: "text",
-                placeholder: "Task Name",
-                value: "{new_todo_item}",
-                oninput: move |e| new_todo_item.set(e.value().clone()),
-            }
-            input {
-                r#type: "datetime-local",
-                placeholder: "Enter Time",
-                value: "{new_todo_due}",
-                oninput: move |e| new_todo_due.set(e.value().clone()),
-            }
-            button {
-                id: "AddTaskButton",
-                name: "AddTaskButton",
-                disabled: "{new_todo_item.read().is_empty()}",
-                onclick: move |_| async move {
-                    add_todo(new_todo_item.read().clone(), new_todo_due.read().clone())
-                        .await
-                        .unwrap();
-                    new_todo_item.set("".to_string());
-                    new_todo_due.set("".to_string());
-                    todos.restart();
-                },
-                "Add"
-            }
-        }
-        br {}
+        h1 { "Todo" }
         div { id: "TaskContainer",
-            h2 { "Current Tasks" }
             div { id: "TaskList",
                 if let Some(tasks) = &*todos.read() {
                     match tasks {
@@ -122,5 +105,98 @@ pub fn App() -> Element {
                 }
             }
         }
+        div { id: "inputArea",
+            button {
+                onclick: move |_| async move {
+                    use_navigator().push(Route::AddTask {});
+                },
+                "Add Task >>"
+            }
+        }
+    }
+}
+
+#[component]
+fn AddTask() -> Element {
+    let mut new_todo_item_name = use_signal(|| String::new());
+    let mut new_todo_item_desc: Signal<String> = use_signal(|| String::new());
+    let mut new_todo_item_imp: Signal<String> = use_signal(|| String::new());
+    let mut new_todo_item_due = use_signal(|| String::new());
+    rsx! {
+        document::Link { rel: "stylesheet", href: MAIN_CSS }
+
+        div { id: "AddTaskHeader",
+            h1 { "Add Task" }
+        }
+        div { id: "inputArea",
+            label {
+                "Task's Title :"
+                input {
+                    r#type: "text",
+                    placeholder: "Name",
+                    value: "{new_todo_item_name}",
+                    oninput: move |e| new_todo_item_name.set(e.value().clone()),
+                }
+            }
+            label {
+                "Description:"
+                textarea {
+                    oninput: move |e| new_todo_item_desc.set(e.value().clone()),
+                    value: "{new_todo_item_desc}",
+                    placeholder: "Description",
+                }
+
+            }
+            label {
+                "Task due by:"
+                input {
+                    r#type: "datetime-local",
+                    value: "{new_todo_item_due}",
+                    oninput: move |e| new_todo_item_due.set(e.value().clone()),
+                }
+            }
+            label {
+                "Importance"
+                input {
+                    r#type: "range",
+                    min: "1",
+                    max: "10",
+                    value: "{new_todo_item_imp}",
+                    oninput: move |e| new_todo_item_imp.set(e.value().clone()),
+                }
+            }
+            button {
+                id: "AddTaskButton",
+                name: "AddTaskButton",
+                disabled: "{(new_todo_item_name.read().is_empty() || new_todo_item_desc.read().is_empty())}",
+                onclick: move |_| async move {
+                    add_todo(
+                            new_todo_item_name.read().clone(),
+                            new_todo_item_desc.read().clone(),
+                            new_todo_item_imp.read().clone(),
+                            new_todo_item_due.read().clone(),
+                        )
+                        .await
+                        .unwrap();
+                    new_todo_item_name.set("".to_string());
+                    new_todo_item_due.set("".to_string());
+                },
+                "Add"
+            }
+            button {
+                onclick: move |_| async move {
+                    use_navigator().push(Route::App {});
+                },
+                "<< Go Back"
+            }
+        }
+    }
+}
+
+#[component]
+fn PageNotFound(route: Vec<String>) -> Element {
+    let route_str = route.join("/");
+    rsx! {
+        h1 { "ERROR 404: Page not found for route \"{route_str}\"" }
     }
 }

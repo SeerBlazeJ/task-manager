@@ -2,7 +2,7 @@
 body {
     background-color: #0f1116;
     color: #ffffff;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     margin: 20px;
 }
 
@@ -13,27 +13,47 @@ h1 {
 }
 
 #AddTaskHeader {
-    display: flex;
     justify-content: center;
 }
 
 #inputArea {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    align-items: center;
+    justify-content: space-evenly;
     margin-bottom: 20px;
     gap: 10px;
 }
 
+#inputArea label {
+    font-weight: 600;
+}
+
 #inputArea input {
-    padding: 20px;
+    margin-left: 20px;
+    padding: 10px;
+    width: 239px;
     border-width: 0px 0px 2px 0px;
     border-color: darkcyan;
     border-style: solid;
     border-radius: 10px;
     background-color: #1e222a;
     color: cyan;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: bold;
+    vertical-align: middle;
+}
+
+#inputArea textarea {
+    margin-left: 20px;
+    padding: 10px;
+    border-width: 0px 0px 2px 0px;
+    border-color: darkcyan;
+    border-style: solid;
+    border-radius: 10px;
+    background-color: #1e222a;
+    color: cyan;
+    font-weight: 500;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    vertical-align: middle;
 }
 
 #inputArea input:focus {
@@ -42,6 +62,16 @@ h1 {
     border-color: cyan;
     box-shadow: 0 0 5px #44ffff;
 }
+
+#inputArea textarea:focus {
+    transition: all 0.3s ease-in-out;
+    outline: none;
+    border-color: cyan;
+    box-shadow: 0 0 5px #44ffff;
+    align-content: center;
+    justify-content: center;
+}
+
 
 #inputArea button {
     padding: 10px 20px;
@@ -75,6 +105,8 @@ h1 {
 
 .DeleteButton:hover {
     background-color: #FB9E3A;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.2);
     cursor: pointer;
 }
 
@@ -83,6 +115,12 @@ h1 {
     width: 15px;
     margin-right: 20px;
     accent-color: cyan;
+}
+
+.TaskCheck:hover {
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.2);
+    cursor: pointer;
 }
 
 #TaskContainer {

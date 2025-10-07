@@ -179,6 +179,7 @@ fn AddTask() -> Element {
                         .await
                         .unwrap();
                     new_todo_item_name.set("".to_string());
+                    new_todo_item_desc.set("".to_string());
                     new_todo_item_due.set("".to_string());
                 },
                 "Add"

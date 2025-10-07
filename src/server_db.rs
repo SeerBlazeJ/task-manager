@@ -40,7 +40,7 @@ pub async fn add_todo(
     let conn = rusqlite::Connection::open("todos.db").expect("Failed to connect to the database");
     conn.execute(
         "INSERT INTO todos (task_name, task_desc, task_imp, due_by) VALUES (?1, ?2, ?3, ?4)",
-        rusqlite::params![task_name, task_desc, task_imp, due],
+        rusqlite::params![task_name, task_desc, task_imp.parse::<u8>().unwrap(), due],
     )
     .unwrap();
     Ok(())
